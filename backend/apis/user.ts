@@ -28,6 +28,10 @@ const login = async (req: any) => {
 		const secret: string = utils.readConfigFile('secret');
 		const sign: string = jwt.sign({ username: user.phoneNumber }, secret)
 
+		if (!sign) {
+			throw new Error('Failed to sign token');
+		}
+
 		return { token: sign };
 	} catch (e) {
 		console.error(colors.red('Failed to login'), e);

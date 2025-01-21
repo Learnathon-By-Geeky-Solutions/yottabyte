@@ -17,6 +17,7 @@ export default [
 		},
 		plugins: {
 			'@typescript-eslint': tsPlugin, // Use the TypeScript ESLint plugin
+			'jest': true, // Enable ESLint rules for Jest
 		},
 		rules: {
 			quotes: ['error', 'single'], // Use single quotes for strings
