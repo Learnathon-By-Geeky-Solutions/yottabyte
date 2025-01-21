@@ -5,13 +5,12 @@ const init = async (mongoUri: string) => {
 	try {
 		if (mongoUri) {
 			await mongoose.connect(mongoUri);
-			console.log(colors.green('Connected to MongoDB'));
+			console.error(colors.green('Connected to MongoDB'));
 		} else {
-			throw new Error('No URI provided');
+			console.error(colors.red('No URI provided'));
 		}
 	} catch (error) {
 		console.error(colors.red('Failed to connect to MongoDB'), error);
-		throw new Error(`Failed to initialize MongoDB: ${error}`);
 	}
 };
 

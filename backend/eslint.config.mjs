@@ -13,7 +13,7 @@ export default [
 		languageOptions: {
 			parser: tsParser,	// Use the TypeScript parser
 			sourceType: 'module',
-			globals: globals.browser,	// Add browser globals to the list of known globals so that ESLint doesn't complain about them
+			globals: {...globals.browser, ...globals.node},	// Add browser globals to the list of known globals so that ESLint doesn't complain about them
 		},
 		plugins: {
 			'@typescript-eslint': tsPlugin, // Use the TypeScript ESLint plugin

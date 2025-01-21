@@ -1,9 +1,9 @@
-import user from "./user";
-import journey from "./journey";
+import user from './user';
+import journey from './journey';
 
 const api = {
-    user,
-    journey,
+	user,
+	journey,
 }
 
 export default api;

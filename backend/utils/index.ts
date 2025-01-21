@@ -1,31 +1,28 @@
 import bc from 'bcrypt';
+import fs from 'fs';
+import path from 'path';
 
-const utils:any = module.exports;
-
-utils.hashPassword = async (plaintextPassword: string): Promise<string> => {
+const hashPassword = async (plaintextPassword: string): Promise<string> => {
 	return await bc.hash(plaintextPassword, 10);
 };
 
-utils.comparePassword = async (
+const comparePassword = async (
 	plaintextPassword: string,
 	hash: string
 ): Promise<boolean> => {
 	return await bc.compare(plaintextPassword, hash);
 };
 
-utils.randomText = (): string => {
-	return Math.random().toString(36).substr(2, 15);
+const randomText = (): string => {
+	return Math.random().toString(36).substring(2, 15);
 };
 
-utils.readConfigFile = (field?: string) :void => {
-	const fs = require('fs');
-	const path = require('path');
-
+const readConfigFile = (field?: string) : any => {
 	const filePath = path.join(__dirname, '../config.json');
 	if (!fs.existsSync(filePath)) {
 		throw new Error('Config file not found');
 	}
-	const data = fs.readFileSync(filePath);
+	const data = fs.readFileSync(filePath, 'utf8');
 	try {
 		const config = JSON.parse(data);
 		if (field) {
@@ -33,9 +30,16 @@ utils.readConfigFile = (field?: string) :void => {
 		}
 		return JSON.parse(data);
 	} catch (e) {
-		console.log('Error parsing JSON file:', e);
+		console.error('Error parsing JSON file:', e);
 		throw e;
 	}
 }
+
+const utils = {
+	hashPassword,
+	comparePassword,
+	randomText,
+	readConfigFile,
+};
 
 export default utils;

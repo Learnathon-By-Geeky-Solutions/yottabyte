@@ -1,5 +1,5 @@
-import {Schema} from 'joi';
-import {NextFunction, Request, Response} from 'express';
+import { Schema } from 'joi';
+import { NextFunction, Request, Response } from 'express';
 
 /**
  * Validate the request body against a schema
