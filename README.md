@@ -1,28 +1,41 @@
-# yottabyte
+<div align="center"><h1>BDPay</h1></div>
+<div align="center">Your transportation buddy</div>
 
 ## Team Members
-- sifatullah-haque (Team Leader)
-- mdsiamulislam
-- fardinkamal62
+- [Sifatullah Haque](https://github.com/sifatullah-haque) (Team Leader)
+- [Md. Siamul Islam](https://github.com/mdsiamulislam)
+- [Fardin Kamal](https://github.com/fardinkamal62)
 
 ## Mentor
 - chisty2996
 
 ## Project Description
-Add your project description here.
+
+BDPay is a mobile application that facilitates public transportation in Bangladesh.
+It allows users to pay for their bus, train, and launch tickets using their mobile phones or NFC card.
+
+The app also provides real-time information on bus routes, schedules, and availability of seats. Users can also track their journey and share their location with friends and family.
 
 ## Getting Started
-1. Clone the repository
-2. Install dependencies
-3. Start development
+- Clone the repository
 
-## Development Guidelines
-1. Create feature branches
-2. Make small, focused commits
-3. Write descriptive commit messages
-4. Create pull requests for review
+```bash
+git clone https://github.com/Learnathon-By-Geeky-Solutions/yottabyte.git
+```
+
+- For backend:
+  - Install dependencies
+
+  ```bash
+  cd backend
+  npm install
+  ```
+
+  - Start the server
+
+  ```bash
+  npm start
+  ```
 
 ## Resources
-- [Project Documentation](docs/)
-- [Development Setup](docs/setup.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
+- [Project Documentation](https://docs.google.com/spreadsheets/d/1Kw3Ozs-KCoovlnJYUAv7jKvMh-fvUV6nvj2RhOi78BY/edit?gid=0#gid=0)
