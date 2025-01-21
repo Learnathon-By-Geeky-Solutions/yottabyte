@@ -1,6 +1,8 @@
 import pluginJs from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import jestPlugin from 'eslint-plugin-jest';
+
 import globals from 'globals';
 
 export default [
@@ -17,7 +19,7 @@ export default [
 		},
 		plugins: {
 			'@typescript-eslint': tsPlugin, // Use the TypeScript ESLint plugin
-			'jest': true, // Enable ESLint rules for Jest
+			'jest': jestPlugin, // Enable ESLint rules for Jest
 		},
 		rules: {
 			quotes: ['error', 'single'], // Use single quotes for strings
