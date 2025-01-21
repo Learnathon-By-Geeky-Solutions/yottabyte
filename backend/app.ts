@@ -5,11 +5,13 @@ import createError from 'http-errors';
 import colors from 'colors';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import 'express-async-errors';
 
 import indexRoute from './routes/index'
 import userRoute from './routes/user'
 import mongo from './db';
 import utils from './utils';
+import errorHandler from './middlewares/error-handler';
 
 const app = express();
 
@@ -24,29 +26,32 @@ app.use('/', indexRoute.router);
 
 // Handle 404 errors
 app.use((_req: any, _res: any, next: (_arg0: any) => void) => {
-	next(createError(404));
+	next(createError(404, 'Not found'));
 });
 
-// Error handler
-app.use(
-	(
-		err: { message: any; status: any },
-		req: { app: { get: (arg0: string) => string } },
-		res: {
-            locals: { message: any; error: any };
-            status: (arg0: any) => void;
-            render: (arg0: string) => void;
-        }
-	) => {
-		// Set locals, only providing error in development
-		res.locals.message = err.message;
-		res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Error handler middleware
+app.use(errorHandler);
 
-		// Render the error page
-		res.status(err.status || 500);
-		res.render('error'); // Ensure you have a view named 'error'
-	}
-);
+// // Error handler
+// app.use(
+// 	(
+// 		err: { message: any; status: any },
+// 		req: { app: { get: (arg0: string) => string } },
+// 		res: {
+//             locals: { message: any; error: any };
+//             status: (arg0: any) => void;
+//             render: (arg0: string) => void;
+//         }
+// 	) => {
+// 		// Set locals, only providing error in development
+// 		res.locals.message = err.message;
+// 		res.locals.error = req.app.get('env') === 'development' ? err : {};
+//
+// 		// Render the error page
+// 		res.status(err.status || 500);
+// 		res.render('error'); // Ensure you have a view named 'error'
+// 	}
+// );
 
 // Start the server
 const configData = utils.readConfigFile();

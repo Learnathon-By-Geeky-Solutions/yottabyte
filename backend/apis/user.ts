@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 
 import utils from '../utils';
 import schemas from '../schemas';
+import { NotFound, Unauthorized, BadRequest, InternalServerError } from 'http-errors';
 
 const userSchema = schemas.User;
 
@@ -15,21 +16,20 @@ const login = async (req: any) => {
 		const user = await userSchema.findOne(query);
 
 		if (!user) {
-			return { error: 'User not found' };
+			throw new NotFound('User not found');
 		}
 
 		const isPasswordValid = await utils.comparePassword(req.body.password, user.password);
 
 		if (!isPasswordValid) {
-			// throw new Error('Invalid password');
-			return { error: 'Invalid password' };
+			throw new Unauthorized('Invalid password');
 		}
 
 		const secret: string = utils.readConfigFile('secret');
 		const sign: string = jwt.sign({ username: user.phoneNumber }, secret)
 
 		if (!sign) {
-			throw new Error('Failed to sign token');
+			throw new InternalServerError('Failed to generate token');
 		}
 
 		return { token: sign };
@@ -46,7 +46,7 @@ const register = async (req: any) => {
 
 	const user = await userSchema.find(query);
 	if (user.length !== 0) {
-		throw new Error('User already exists');
+		throw new BadRequest('User already exists');
 	}
 
 	const password: string = await utils.hashPassword(req.body.password);
