@@ -1,23 +1,39 @@
 import bc from 'bcrypt';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 const hashPassword = async (plaintextPassword: string): Promise<string> => {
-	return await bc.hash(plaintextPassword, 10);
+	try{
+		return await bc.hash(plaintextPassword, 10);
+	} catch (e) {
+		console.error('Error hashing password:', e);
+		throw e;
+	}
 };
 
 const comparePassword = async (
 	plaintextPassword: string,
 	hash: string
 ): Promise<boolean> => {
-	return await bc.compare(plaintextPassword, hash);
+	try{
+		return await bc.compare(plaintextPassword, hash);
+	} catch (e) {
+		console.error('Error comparing password:', e);
+		throw e;
+	}
 };
 
 const randomText = (): string => {
-	return Math.random().toString(36).substring(2, 15);
+	return crypto.randomBytes(16).toString('hex');
 };
 
-const readConfigFile = (field?: string) : any => {
+
+interface ConfigData {
+	[key: string]: unknown;
+}
+
+const readConfigFile = (field?: string) : unknown => {
 	const filePath = path.join(__dirname, '../config.json');
 	if (!fs.existsSync(filePath)) {
 		throw new Error('Config file not found');
@@ -28,7 +44,7 @@ const readConfigFile = (field?: string) : any => {
 		if (field) {
 			return config[field];
 		}
-		return JSON.parse(data);
+		return config
 	} catch (e) {
 		console.error('Error parsing JSON file:', e);
 		throw e;

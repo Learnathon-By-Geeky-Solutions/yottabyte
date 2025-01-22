@@ -1,24 +1,31 @@
 import { Schema } from 'joi';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response, RequestHandler } from 'express';
+
+import createError from 'http-errors';
+
+interface ValidationError extends createError.HttpError {
+	details?: string[];
+}
 
 /**
  * Validate the request body against a schema
  * @param schema
  */
-const validateRequest = (schema: Schema) => {
-	return (req: Request, res: Response, next: NextFunction):void => {
+const validateRequest = (schema: Schema): RequestHandler => {
+	return (req: Request, _res: Response, next: NextFunction): void => {
 		const { error } = schema.validate(req.body, { abortEarly: false });
 
 		if (error) {
-			res.status(400).json({
-				status: 'ERROR',
-				message: 'Validation Error',
-				details: error.details.map(detail => detail.message),
-			});
+			const validationError: ValidationError = createError(400, 'Validation Error');
+			validationError.details = error.details.map(detail => detail.message);
+			return next(validationError);
 		}
-		next();
+
+		return next();
 	};
+
 };
+
 
 const middlewares = {
 	validateRequest,

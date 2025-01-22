@@ -4,11 +4,11 @@ const router = express.Router();
 
 import controllers from '../controllers/index';
 
-router.get('/', function (_: any, res: { connection: { end: () => any } }) {
+router.get('/', function (_: express.Request, res: { connection: { end: () => void } }) {
 	controllers.resetConnection(res);
 });
 
-router.get('/api/v1/ping', function (_, res) {
+router.get('/api/v1/ping', function (_: express.Request, res: express.Response) {
 	controllers.ping(res);
 });
 

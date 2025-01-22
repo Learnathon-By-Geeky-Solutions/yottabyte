@@ -24,6 +24,9 @@ git clone https://github.com/Learnathon-By-Geeky-Solutions/yottabyte.git
 ```
 
 - For backend:
+  - Pre-requisites:
+    - Node.js (v14 or higher)
+    - MongoDB (v4.4 or higher)
   - Install dependencies
 
   ```bash

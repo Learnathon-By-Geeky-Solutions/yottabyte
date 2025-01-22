@@ -1,3 +1,5 @@
+// backend/tests/userApi.test.ts
+
 import userApi from '../apis/user';
 import schemas from '../schemas';
 import utils from '../utils';
@@ -7,101 +9,72 @@ jest.mock('../schemas');
 jest.mock('../utils');
 jest.mock('jsonwebtoken');
 
+const validUser = {
+	phoneNumber: '1234567890',
+	password: 'hashedPassword',
+};
+
+const validReq = {
+	body: {
+		phoneNumber: '1234567890',
+		password: 'password123',
+	},
+};
+
+const newUserReq = {
+	body: {
+		phoneNumber: '1234567890',
+		name: 'John Doe',
+		password: 'password123',
+	},
+};
+
 describe('userApi', () => {
-    describe('login', () => {
-        it('should return a token for valid credentials', async () => {
-            const req = {
-                body: {
-                    phoneNumber: '1234567890',
-                    password: 'password123',
-                },
-            };
+	describe('login', () => {
+		it('should return a token for valid credentials', async () => {
+			jest.spyOn(schemas.User, 'findOne').mockResolvedValue(validUser);
+			jest.spyOn(utils, 'comparePassword').mockResolvedValue(true);
+			jest.spyOn(utils, 'readConfigFile').mockReturnValue('secret');
+			(jwt.sign as jest.Mock).mockReturnValue('token');
 
-            const user = {
-                phoneNumber: '1234567890',
-                password: 'hashedPassword',
-            };
+			const result = await userApi.login(validReq);
 
-            jest.spyOn(schemas.User, 'findOne').mockResolvedValue(user);
-            jest.spyOn(utils, 'comparePassword').mockResolvedValue(true);
-            jest.spyOn(utils, 'readConfigFile').mockReturnValue('secret');
-            (jwt.sign as jest.Mock).mockReturnValue('token');
+			expect(result).toEqual({ token: 'token' });
+		});
 
-            const result = await userApi.login(req);
+		it('should return an error if user is not found', async () => {
+			jest.spyOn(schemas.User, 'findOne').mockResolvedValue(null);
 
-            expect(result).toEqual({ token: 'token' });
-        });
+			const result = await userApi.login(validReq);
 
-        it('should return an error if user is not found', async () => {
-            const req = {
-                body: {
-                    phoneNumber: '1234567890',
-                    password: 'password123',
-                },
-            };
+			expect(result).toEqual({ error: 'User not found' });
+		});
 
-            jest.spyOn(schemas.User, 'findOne').mockResolvedValue(null);
+		it('should return an error for invalid password', async () => {
+			jest.spyOn(schemas.User, 'findOne').mockResolvedValue(validUser);
+			jest.spyOn(utils, 'comparePassword').mockResolvedValue(false);
 
-            const result = await userApi.login(req);
+			const result = await userApi.login(validReq);
 
-            expect(result).toEqual({ error: 'User not found' });
-        });
+			expect(result).toEqual({ error: 'Invalid password' });
+		});
+	});
 
-        it('should return an error for invalid password', async () => {
-            const req = {
-                body: {
-                    phoneNumber: '1234567890',
-                    password: 'password123',
-                },
-            };
+	describe('register', () => {
+		it('should create a new user', async () => {
+			jest.spyOn(schemas.User, 'find').mockResolvedValue([]);
+			jest.spyOn(utils, 'hashPassword').mockResolvedValue('hashedPassword');
+			jest.spyOn(schemas.User, 'create').mockResolvedValue({ id: '1', ...newUserReq.body, password: 'hashedPassword' });
 
-            const user = {
-                phoneNumber: '1234567890',
-                password: 'hashedPassword',
-            };
+			const result = await userApi.register(newUserReq);
 
-            jest.spyOn(schemas.User, 'findOne').mockResolvedValue(user);
-            jest.spyOn(utils, 'comparePassword').mockResolvedValue(false);
+			expect(result).toEqual({ id: '1', ...newUserReq.body, password: 'hashedPassword' });
+		});
 
-            const result = await userApi.login(req);
+		it('should throw an error if user already exists', async () => {
+			jest.spyOn(schemas.User, 'find').mockResolvedValue([{}]);
 
-            expect(result).toEqual({ error: 'Invalid password' });
-        });
-    });
-
-    describe('register', () => {
-        it('should create a new user', async () => {
-            const req = {
-                body: {
-                    phoneNumber: '1234567890',
-                    name: 'John Doe',
-                    password: 'password123',
-                },
-            };
-
-            jest.spyOn(schemas.User, 'find').mockResolvedValue([]);
-            jest.spyOn(utils, 'hashPassword').mockResolvedValue('hashedPassword');
-
-            // @ts-ignore
-            jest.spyOn(schemas.User, 'create').mockResolvedValue({ id: '1', ...req.body, password: 'hashedPassword' });
-
-            const result = await userApi.register(req);
-
-            expect(result).toEqual({ id: '1', ...req.body, password: 'hashedPassword' });
-        });
-
-        it('should throw an error if user already exists', async () => {
-            const req = {
-                body: {
-                    phoneNumber: '1234567890',
-                    name: 'John Doe',
-                    password: 'password123',
-                },
-            };
-
-            jest.spyOn(schemas.User, 'find').mockResolvedValue([{}]);
-
-            await expect(userApi.register(req)).rejects.toThrow('User already exists');
-        });
-    });
+			await expect(userApi.register(newUserReq)).rejects.toThrow('User already exists');
+		});
+	});
 });

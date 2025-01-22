@@ -26,7 +26,7 @@ const login = async (req: any) => {
 		}
 
 		const secret: string = utils.readConfigFile('secret');
-		const sign: string = jwt.sign({ username: user.phoneNumber }, secret)
+		const sign: string = jwt.sign({ username: user.phoneNumber }, secret, { expiresIn: '1d' });
 
 		if (!sign) {
 			throw new InternalServerError('Failed to generate token');
