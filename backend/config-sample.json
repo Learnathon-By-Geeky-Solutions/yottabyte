@@ -1,0 +1,9 @@
+{
+  "secret": "0123456789",
+  "mongo": {
+    "uri": "Your production MongoDB URI",
+    "dev_uri": "Your development MongoDB URI | Sample: mongodb://localhost:27017/your_db_name"
+  },
+  "port": "3000",
+  "env": "development or production"
+}
