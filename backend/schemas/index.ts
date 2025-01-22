@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
 			validator: function(v: string) {
 				return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 			},
-			message: props => `${props.value} is not a valid email!`
+			message: (props: { value: any; }) => `${props.value} is not a valid email!`
 		}
 	},
 	picture: {
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 			validator: function(v: string) {
 				return /^(\+8801|01)[3-9][0-9]{8}$/.test(v);
 			},
-			message: props => `${props.value} is not a valid phone number!`
+			message: (props: { value: any; }) => `${props.value} is not a valid phone number!`
 		}
 	},
 	balance: {

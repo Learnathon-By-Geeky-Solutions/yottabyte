@@ -29,11 +29,7 @@ const randomText = (): string => {
 };
 
 
-interface ConfigData {
-	[key: string]: unknown;
-}
-
-const readConfigFile = (field?: string) : unknown => {
+const readConfigFile = (field?: string) : any => {
 	const filePath = path.join(__dirname, '../config.json');
 	if (!fs.existsSync(filePath)) {
 		throw new Error('Config file not found');
@@ -44,7 +40,7 @@ const readConfigFile = (field?: string) : unknown => {
 		if (field) {
 			return config[field];
 		}
-		return config
+		return JSON.parse(data);
 	} catch (e) {
 		console.error('Error parsing JSON file:', e);
 		throw e;

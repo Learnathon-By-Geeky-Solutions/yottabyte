@@ -10,7 +10,7 @@ router.post('/login', middlewares.validateRequest(schemas.loginSchema), async (r
 		const result = await controllers.login(req);
 		res.status(200).json({ success: true, data: result });
 	} catch (error) {
-		res.status(400).json({ success: false, error: error.message || 'Authentication failed' });
+		res.status(400).json({ success: false, error: (error as Error).message || 'Authentication failed' });
 	}
 });
 
@@ -19,7 +19,7 @@ router.post('/register', middlewares.validateRequest(schemas.registerSchema), as
 		const result = await controllers.register(req);
 		res.status(201).json({ success: true, data: result });
 	} catch (error) {
-		res.status(400).json({ success: false, error: error.message || 'Registration failed' });
+		res.status(400).json({ success: false, error: (error as Error).message || 'Registration failed' });
 	}
 });
 
