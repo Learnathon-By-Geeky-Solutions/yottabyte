@@ -16,7 +16,10 @@ export default [
 			ecmaVersion: 2022,	// Use ECMAScript 2022
 			parser: tsParser,	// Use the TypeScript parser
 			sourceType: 'module',
-			globals: {...globals.browser, ...globals.node},	// Add browser globals to the list of known globals so that ESLint doesn't complain about them
+			globals: {...globals.browser, ...globals.node, ...globals.jest},	// Add browser globals to the list of known globals so that ESLint doesn't complain about them
+			parserOptions: {
+				project: './tsconfig.json',	// Use the TypeScript project configuration file
+			}
 		},
 		plugins: {
 			'@typescript-eslint': tsPlugin, // Use the TypeScript ESLint plugin
