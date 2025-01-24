@@ -5,7 +5,7 @@ import * as process from 'node:process';
 require('dotenv').config({ path: '.env.test' });
 
 if (process.env.TEST_USER_PASSWORD == null) {
-	throw new Error('TEST_USER_PASSWORD is not defined');
+	throw new Error('TEST_USER_PASSWORD is not defined in .env.test. Please check .env.test.example for required configurations.');
 }
 
 export const validUser: User = {
