@@ -6,12 +6,14 @@ import colors from 'colors';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import 'express-async-errors';
+import * as process from 'node:process';
 
 import indexRoute from './routes/index'
 import userRoute from './routes/user'
 import mongo from './db';
 import utils from './utils';
 import errorHandler from './middlewares/error-handler';
+import { ConfigFile } from './types';
 
 const app = express();
 
@@ -32,47 +34,25 @@ app.use((_req: any, _res: any, next: (_arg0: any) => void) => {
 // Error handler middleware
 app.use(errorHandler);
 
-// // Error handler
-// app.use(
-// 	(
-// 		err: { message: any; status: any },
-// 		req: { app: { get: (arg0: string) => string } },
-// 		res: {
-//             locals: { message: any; error: any };
-//             status: (arg0: any) => void;
-//             render: (arg0: string) => void;
-//         }
-// 	) => {
-// 		// Set locals, only providing error in development
-// 		res.locals.message = err.message;
-// 		res.locals.error = req.app.get('env') === 'development' ? err : {};
-//
-// 		// Render the error page
-// 		res.status(err.status || 500);
-// 		res.render('error'); // Ensure you have a view named 'error'
-// 	}
-// );
-
 // Start the server
-const configData = utils.readConfigFile();
+const configData: ConfigFile = <ConfigFile>utils.readConfigFile();
 const PORT = configData.port;
 
 app.listen(PORT, () => {
 	console.log(colors.yellow('Starting BDPay Backend...'));
 	console.log(colors.yellow('Connecting to database...'));
 
-	try {
-		mongo.init(configData.env === 'development' ? configData.mongo.dev_uri : configData.mongo.uri)
-			.then(() => {
-			})
-			.then(() => {
-				console.log(colors.green(`Server started on port ${PORT}`));
-			})
-			.catch((error: any) => {
-				throw error;
-			});
-	} catch (err) {
-		console.log(colors.red('Error occurred, server can\'t start\n'), err);
-		throw err;
+	if (configData.env == null || configData.mongo == null || configData.mongo.uri == null || configData.mongo.dev_uri == null) {
+		console.error(colors.red('Environment not found'));
+		process.exit(1);
 	}
+
+	mongo.init(configData.env === 'development' ? configData.mongo.dev_uri : configData.mongo.uri)
+		.then(() => {
+			console.log(colors.green(`Server started on port ${PORT}`));
+		})
+		.catch((error: any) => {
+			console.log(colors.red('Error occurred, server can\'t start\n'), error);
+			process.exit(1);
+		});
 });

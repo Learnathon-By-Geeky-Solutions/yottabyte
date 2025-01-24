@@ -22,10 +22,10 @@ This is the backend of the BDPay. It is a REST API that provides the necessary e
 
 ## Technologies
 
-- Language: `TypeScript`
-- Framework: `Express.js`
-- Database: `MongoDB`
-- ORM: `Mongoose`
+- Language: `TypeScript` (^5.6.3)
+- Framework: `Express.js` (^4.21.2)
+- Database: `MongoDB` (^6.12.0)
+- ORM: `Mongoose` (^8.9.5)
 
 ## License
 

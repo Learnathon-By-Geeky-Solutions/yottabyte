@@ -11,6 +11,13 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		unique: true,
+		maxlength: 255,
+		validate: {
+			validator: function(v: string): boolean {
+				return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v);
+			},
+			message: (props: { value: any; }) : string => `${props.value} is not a valid email!`
+		}
 	},
 	picture: {
 		type: String,
@@ -20,6 +27,12 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		unique: true,
+		validate: {
+			validator: function(v: string): boolean {
+				return /^(\+8801|01)[3-9][0-9]{8}$/.test(v);
+			},
+			message: (props: { value: any; }): string => `${props.value} is not a valid phone number!`
+		}
 	},
 	balance: {
 		type: Number,
@@ -36,11 +49,11 @@ const userSchema = new mongoose.Schema({
 	},
 	createdAt: {
 		type: String,
-		default:() => moment().tz('Asia/Dhaka').format(),
+		default:(): string => moment().tz('Asia/Dhaka').format(),
 	},
 	updatedAt: {
 		type: String,
-		default:() => moment().tz('Asia/Dhaka').format(),
+		default:(): string => moment().tz('Asia/Dhaka').format(),
 	}
 });
 
