@@ -18,17 +18,17 @@ export const validUser: User = {
 	balance: 100,
 };
 
-export const validReq: Request = {
+export const validReq = {
 	body: {
 		phoneNumber: '+8801678910112',
 		password: process.env.TEST_USER_PASSWORD
 	},
-} as Request;
+} satisfies Partial<Request>;
 
-export const newUserReq: Request = {
+export const newUserReq = {
 	body: {
-		phoneNumber: '1234567890',
+		phoneNumber: '+8801234567890',
 		name: 'John Doe',
 		password: process.env.TEST_USER_PASSWORD
 	},
-} as Request;
+} satisfies Partial<Request>
