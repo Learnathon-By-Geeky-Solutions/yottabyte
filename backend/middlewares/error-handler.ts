@@ -1,10 +1,4 @@
-// middlewares/error-handler.ts
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import { HttpError } from 'http-errors';
-
-interface ExtendedHttpError extends HttpError {
-	details?: string[];
-}
 
 interface AppError extends Error {
 	status?: number;
@@ -23,7 +17,7 @@ const errorHandler: ErrorRequestHandler = (
 		code: err.code,
 	});
 
-	if (err.status && err.message) {
+	if ((err.status != null) && err.message) {
 		const response: any = {
 			status: 'ERROR',
 			message: err.message,
