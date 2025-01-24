@@ -12,12 +12,13 @@ import userRoute from './routes/user'
 import mongo from './db';
 import utils from './utils';
 import errorHandler from './middlewares/error-handler';
+import * as process from "node:process";
 
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // Router
@@ -26,7 +27,7 @@ app.use('/', indexRoute.router);
 
 // Handle 404 errors
 app.use((_req: any, _res: any, next: (_arg0: any) => void) => {
-	next(createError(404, 'Not found'));
+    next(createError(404, 'Not found'));
 });
 
 // Error handler middleware
@@ -37,19 +38,15 @@ const configData = utils.readConfigFile();
 const PORT = configData.port;
 
 app.listen(PORT, () => {
-	console.log(colors.yellow('Starting BDPay Backend...'));
-	console.log(colors.yellow('Connecting to database...'));
+    console.log(colors.yellow('Starting BDPay Backend...'));
+    console.log(colors.yellow('Connecting to database...'));
 
-	try {
-		mongo.init(configData.env === 'development' ? configData.mongo.dev_uri : configData.mongo.uri)
-			.then(() => {
-				console.log(colors.green(`Server started on port ${PORT}`));
-			})
-			.catch((error: any) => {
-				throw error;
-			});
-	} catch (err) {
-		console.log(colors.red('Error occurred, server can\'t start\n'), err);
-		throw err;
-	}
+    mongo.init(configData.env === 'development' ? configData.mongo.dev_uri : configData.mongo.uri)
+        .then(() => {
+            console.log(colors.green(`Server started on port ${PORT}`));
+        })
+        .catch((error: any) => {
+            console.log(colors.red('Error occurred, server can\'t start\n'), error);
+            process.exit(1);
+        });
 });
