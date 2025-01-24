@@ -1,4 +1,7 @@
 import * as jwt from 'jsonwebtoken';
+import * as process from 'node:process';
+
+require('dotenv').config({ path: '.env.test' });
 
 import userApi from '../apis/user';
 import schemas from '../schemas';
@@ -41,12 +44,16 @@ describe('userApi', () => {
 	describe('register', () => {
 		it('should create a new user', async () => {
 			jest.spyOn(schemas.User, 'find').mockResolvedValue([]);
-			jest.spyOn(utils, 'hashPassword').mockResolvedValue('hashedPassword');
-			jest.spyOn(schemas.User, 'create').mockResolvedValue({ id: '1', ...newUserReq.body, password: 'hashedPassword' });
+
+			if (process.env.TEST_USER_PASSWORD == null) {
+				throw new Error('TEST_USER_PASSWORD is not defined');
+			}
+			jest.spyOn(utils, 'hashPassword').mockResolvedValue(process.env.TEST_USER_PASSWORD);
+			jest.spyOn(schemas.User, 'create').mockResolvedValue({ id: '1', ...newUserReq.body, password: process.env.TEST_USER_PASSWORD });
 
 			const result = await userApi.register(newUserReq);
 
-			expect(result).toEqual({ id: '1', ...newUserReq.body, password: 'hashedPassword' });
+			expect(result).toEqual({ id: '1', ...newUserReq.body, password: process.env.TEST_USER_PASSWORD });
 		});
 
 		it('should throw an error if user already exists', async () => {

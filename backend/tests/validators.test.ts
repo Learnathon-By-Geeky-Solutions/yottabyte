@@ -1,4 +1,11 @@
 import schemas from '../validators';
+import process from 'node:process';
+
+require('dotenv').config({ path: '.env.test' });
+
+if (process.env.TEST_USER_PASSWORD == null) {
+	throw new Error('TEST_USER_PASSWORD is not defined');
+}
 
 describe('Validation Schemas', () => {
 	describe('registerSchema', () => {
@@ -6,7 +13,7 @@ describe('Validation Schemas', () => {
 			const validData = {
 				name: 'John Doe',
 				email: 'john.doe@example.com',
-				password: 'password123',
+				password: process.env.TEST_USER_PASSWORD,
 			};
 			const { error } = schemas.registerSchema.validate(validData);
 			expect(error).toBeUndefined();
@@ -29,7 +36,7 @@ describe('Validation Schemas', () => {
 				name: 'John Doe',
 				email: 'john@doe.com',
 				phoneNumber: '08012345678',
-				password: 'password123',
+				password: process.env.TEST_USER_PASSWORD,
 			};
 			const { error } = schemas.registerSchema.validate(invalidData);
 			expect(error).toBeDefined();
@@ -38,7 +45,7 @@ describe('Validation Schemas', () => {
 			const invalidData = {
 				name: 'John Doe',
 				email: 'john@doe.com',
-				password: '123', // too simple
+				password: process.env.TEST_simple_PASSWORD, // too simple
 			};
 			const { error } = schemas.registerSchema.validate(invalidData);
 			expect(error).toBeDefined();
@@ -48,7 +55,7 @@ describe('Validation Schemas', () => {
 			const invalidData = {
 				name: 'John Doe',
 				phoneNumber: '123', // invalid format
-				password: 'password123',
+				password: process.env.TEST_USER_PASSWORD,
 			};
 			const { error } = schemas.registerSchema.validate(invalidData);
 			expect(error).toBeDefined();
@@ -59,7 +66,7 @@ describe('Validation Schemas', () => {
 		it('should validate a correct login object', () => {
 			const validData = {
 				email: 'john@doe.com',
-				password: 'password123',
+				password: process.env.TEST_USER_PASSWORD,
 			};
 			const { error } = schemas.loginSchema.validate(validData);
 			expect(error).toBeUndefined();
@@ -68,7 +75,7 @@ describe('Validation Schemas', () => {
 		it('should invalidate an incorrect login object', () => {
 			const invalidData = {
 				registrationNumber: 'INVALID',
-				password: 'pass',
+				password: process.env.TEST_USER_PASSWORD,
 			};
 			const { error } = schemas.loginSchema.validate(invalidData);
 			expect(error).toBeDefined();
