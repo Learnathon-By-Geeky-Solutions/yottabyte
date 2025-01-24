@@ -18,10 +18,10 @@ const validateRequest = (schema: Schema): RequestHandler => {
 		if (error) {
 			const validationError: ValidationError = createError(400, 'Validation Error');
 			validationError.details = error.details.map(detail => detail.message);
-			return next(validationError);
+			next(validationError);
 		}
 
-		return next();
+		next();
 	};
 
 };
