@@ -1,8 +1,10 @@
 import Joi from 'joi';
 
+const MAX_EMAIL_LENGTH = 100;
+
 const registerSchema = Joi.object({
 	name: Joi.string().min(2).required(),
-	email: Joi.string().email(),
+	email: Joi.string().max(MAX_EMAIL_LENGTH).email(),
 	phoneNumber: Joi.string().pattern(/^(\+8801|01)[3-9][0-9]{8}$/)
 		.message('Phone number must be a valid Bangladeshi number'),
 	nationalIdCard: Joi.string().length(13).pattern(/^[0-9]{13}$/)
@@ -22,7 +24,7 @@ const registerSchema = Joi.object({
 }).xor('email', 'phoneNumber');
 
 const loginSchema = Joi.object({
-	email: Joi.string().email(),
+	email: Joi.string().max(MAX_EMAIL_LENGTH).email(),
 	phoneNumber: Joi.string().pattern(/^(\+8801|01)[3-9][0-9]{8}$/)
 		.message('Phone number must be a valid Bangladeshi number'),
 	password: Joi.string()
