@@ -34,7 +34,6 @@ describe('Validation Schemas', () => {
 			const { error } = schemas.registerSchema.validate(invalidData);
 			expect(error).toBeDefined();
 		});
-		// Add these test cases
 		it('should validate password complexity requirements', () => {
 			const invalidData = {
 				name: 'John Doe',
@@ -72,27 +71,6 @@ describe('Validation Schemas', () => {
 				password: 'pass',
 			};
 			const { error } = schemas.loginSchema.validate(invalidData);
-			expect(error).toBeDefined();
-		});
-
-		// Add these test cases
-		it('should validate password complexity requirements', () => {
-			const invalidData = {
-				name: 'John Doe',
-				email: 'john@doe.com',
-				password: '123', // too simple
-			};
-			const { error } = schemas.registerSchema.validate(invalidData);
-			expect(error).toBeDefined();
-		});
-
-		it('should validate phone number format', () => {
-			const invalidData = {
-				name: 'John Doe',
-				phoneNumber: '123', // invalid format
-				password: 'password123',
-			};
-			const { error } = schemas.registerSchema.validate(invalidData);
 			expect(error).toBeDefined();
 		});
 	});
