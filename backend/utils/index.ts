@@ -1,7 +1,7 @@
 import bc from 'bcrypt';
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 import { ConfigFile } from '../types';
 
