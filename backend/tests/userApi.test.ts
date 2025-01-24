@@ -1,40 +1,22 @@
-// backend/tests/userApi.test.ts
+import * as jwt from 'jsonwebtoken';
 
 import userApi from '../apis/user';
 import schemas from '../schemas';
 import utils from '../utils';
-import * as jwt from 'jsonwebtoken';
+import { ConfigFile } from '../types';
+
+import { validUser, validReq, newUserReq } from './userTestData';
 
 jest.mock('../schemas');
 jest.mock('../utils');
 jest.mock('jsonwebtoken');
-
-const validUser = {
-	phoneNumber: '1234567890',
-	password: 'hashedPassword',
-};
-
-const validReq = {
-	body: {
-		phoneNumber: '1234567890',
-		password: 'password123',
-	},
-};
-
-const newUserReq = {
-	body: {
-		phoneNumber: '1234567890',
-		name: 'John Doe',
-		password: 'password123',
-	},
-};
 
 describe('userApi', () => {
 	describe('login', () => {
 		it('should return a token for valid credentials', async () => {
 			jest.spyOn(schemas.User, 'findOne').mockResolvedValue(validUser);
 			jest.spyOn(utils, 'comparePassword').mockResolvedValue(true);
-			jest.spyOn(utils, 'readConfigFile').mockReturnValue('secret');
+			jest.spyOn(utils, 'readConfigFile').mockReturnValue(<ConfigFile>{ secret: 'secret' });
 			(jwt.sign as jest.Mock).mockReturnValue('token');
 
 			const result = await userApi.login(validReq);
@@ -45,18 +27,14 @@ describe('userApi', () => {
 		it('should return an error if user is not found', async () => {
 			jest.spyOn(schemas.User, 'findOne').mockResolvedValue(null);
 
-			const result = await userApi.login(validReq);
-
-			expect(result).toEqual({ error: 'User not found' });
+			await expect(userApi.login(validReq)).rejects.toThrow('User not found');
 		});
 
 		it('should return an error for invalid password', async () => {
 			jest.spyOn(schemas.User, 'findOne').mockResolvedValue(validUser);
 			jest.spyOn(utils, 'comparePassword').mockResolvedValue(false);
 
-			const result = await userApi.login(validReq);
-
-			expect(result).toEqual({ error: 'Invalid password' });
+			await expect(userApi.login(validReq)).rejects.toThrow('Invalid password');
 		});
 	});
 

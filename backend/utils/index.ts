@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
+import { ConfigFile } from '../types';
+
 const hashPassword = async (plaintextPassword: string): Promise<string> => {
 	try{
 		return await bc.hash(plaintextPassword, 10);
@@ -29,16 +31,16 @@ const randomText = (): string => {
 };
 
 
-const readConfigFile = (field?: string) : any => {
+const readConfigFile = (field?: keyof ConfigFile): ConfigFile => {
 	const filePath = path.join(__dirname, '../config.json');
 	if (!fs.existsSync(filePath)) {
 		throw new Error('Config file not found');
 	}
 	const data = fs.readFileSync(filePath, 'utf8');
 	try {
-		const config = JSON.parse(data);
-		if (field) {
-			return config[field];
+		const config = JSON.parse(data) as ConfigFile;
+		if (field != null) {
+			return { [field]: config[field] } as ConfigFile;
 		}
 		return JSON.parse(data);
 	} catch (e) {

@@ -1,15 +1,17 @@
 import colors from 'colors';
 import * as jwt from 'jsonwebtoken';
+import { NotFound, Unauthorized, BadRequest, InternalServerError } from 'http-errors';
+import express from 'express';
 
 import utils from '../utils';
 import schemas from '../schemas';
-import { NotFound, Unauthorized, BadRequest, InternalServerError } from 'http-errors';
+import { ConfigFile } from '../types';
 
 const userSchema = schemas.User;
 
-const login = async (req: any) => {
+const login = async (req: express.Request): Promise<object> => {
 	const query = {
-		phoneNumber: req.body.phoneNumber,
+		'phoneNumber': req.body.phoneNumber as string,
 	}
 
 	try {
@@ -25,8 +27,13 @@ const login = async (req: any) => {
 			throw new Unauthorized('Invalid password');
 		}
 
-		const secret: string = utils.readConfigFile('secret');
-		const sign: string = jwt.sign({ username: user.phoneNumber }, secret, { expiresIn: '1d' });
+		const secret: ConfigFile = utils.readConfigFile('secret');
+
+		if (secret.secret == null) {
+			throw new Error('Secret not found');
+		}
+
+		const sign: string = jwt.sign({ username: user.phoneNumber }, secret.secret, { expiresIn: '1d' });
 
 		if (!sign) {
 			throw new InternalServerError('Failed to generate token');
@@ -39,9 +46,9 @@ const login = async (req: any) => {
 	}
 };
 
-const register = async (req: any) => {
+const register = async (req: express.Request): Promise<object> => {
 	const query = {
-		phoneNumber: req.body.phoneNumber,
+		'phoneNumber': req.body.phoneNumber as string,
 	};
 
 	const user = await userSchema.find(query);
@@ -51,9 +58,9 @@ const register = async (req: any) => {
 
 	const password: string = await utils.hashPassword(req.body.password);
 	const data = {
-		phoneNumber: req.body.phoneNumber,
-		name: req.body.name,
-		password: password,
+		'phoneNumber': req.body.phoneNumber as string,
+		'name': req.body.name as string,
+		'password': password,
 	};
 
 	try {
