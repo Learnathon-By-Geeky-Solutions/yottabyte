@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
-		required: true,
 		unique: true,
 		maxlength: 255,
 		validate: {
@@ -21,11 +20,11 @@ const userSchema = new mongoose.Schema({
 	},
 	picture: {
 		type: String,
-		required: true,
+		required: false,
+		default: '',
 	},
 	phoneNumber: {
 		type: String,
-		required: true,
 		unique: true,
 		validate: {
 			validator: function(v: string): boolean {
@@ -56,6 +55,14 @@ const userSchema = new mongoose.Schema({
 		default:(): string => moment().tz('Asia/Dhaka').format(),
 	}
 });
+
+userSchema.path('email').validate(function(value: string) {
+	return this.phoneNumber || value;
+}, 'Either email or phone number is required!');
+
+userSchema.path('phoneNumber').validate(function(value: string) {
+	return this.email || value;
+}, 'Either email or phone number is required!');
 
 const User = mongoose.model('User', userSchema);
 

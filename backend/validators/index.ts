@@ -11,7 +11,6 @@ const registerSchema = Joi.object({
 		.messages({
 			'string.pattern.base': 'National ID must be 13 digits'
 		}),
-	picture: Joi.string(),
 	password: Joi.string()
 		.min(8)
 		.max(100)
