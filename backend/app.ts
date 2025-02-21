@@ -8,12 +8,14 @@ import cors from 'cors';
 import 'express-async-errors';
 import * as process from 'node:process';
 
-import indexRoute from './routes/index'
-import userRoute from './routes/user'
 import mongo from './db';
 import utils from './utils';
 import errorHandler from './middlewares/error-handler';
 import { ConfigFile } from './types';
+
+import indexRoutes from './routes/index'
+import userRoutes from './routes/user'
+import journeyRoutes from './routes/journey';
 
 const app = express();
 
@@ -23,8 +25,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Router
-app.use('/api/v1/user', userRoute.router);
-app.use('/', indexRoute.router);
+app.use('/', indexRoutes.router);
+app.use('/api/v1/user', userRoutes.router);
+app.use('/api/v1/journey', journeyRoutes.router);
 
 // Handle 404 errors
 app.use((_req: any, _res: any, next: (_arg0: any) => void) => {
